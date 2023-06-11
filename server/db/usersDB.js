@@ -1,6 +1,5 @@
-import pool from './db.js'
-import User from './types.js'
-
+import pool from './dbPool.js'
+//import { User } from './types.js'
 
 /**
  * Get all users from the database
@@ -17,11 +16,11 @@ export async function getAllUsers() {
  * @returns {Promise<number>} id of the new user
  */
 export async function createUser(user) {
-    const { name, username, email, phone, website } = user
+    const { firstName, lastName, username, email, phone, password } = user
     const [result] = await pool.query(`
-    INSERT INTO users (name, username, email, phone)
-    VALUES (?, ?, ?, ?)`,
-        [name, username, email, phone, website])
+    INSERT INTO users (firstName, lastName, username, email, phone, password)
+    VALUES (?, ?, ?, ?, ?, ?)`,
+        [firstName, lastName, username, email, phone, password])
     return result.insertId
 }
 
@@ -36,24 +35,32 @@ export async function getUser(id) {
     return rows[0]
 }
 
+export async function getUserByUsername(username) {
+    const [rows] = await pool.query(`SELECT * FROM users 
+    WHERE username = ? AND isDeleted = false`,
+        [username])
+    return rows[0]
+}
+
 /**
  * 
  * @param {number} id 
  * @param {User} newUser 
  * @returns {Promise<boolean>} true if the user was updated, false if not found
  */
-export async function updateUser(id, newUser) {
-    const oldUser = await getUser(id)
+export async function updateUser(username, newProps) {
+    const oldUser = await getUserByUsername(username)
     if (!oldUser) {
-        return false
+        throw "User not found"
     }
 
-    const { name, username, email, phone, website } = { ...newUser, ...oldUser }
+    const { firstName, lastName, email, phone, password } = { ...oldUser, ...newProps }
+    console.log('updateUser', firstName, lastName, email, phone, password, username)
     const [result] = await pool.query(`
-    UPDATE users
-    SET name = ?, username = ?, email = ?, phone = ?, website = ?
-    WHERE id = ?`,
-        [name, username, email, phone, website, id])
+    UPDATE users 
+    SET firstName = ?, lastName = ?, email = ?, phone = ?, password = ?
+    WHERE username = ?`,
+        [firstName, lastName, email, phone, password, username])
     return result.affectedRows > 0
 }
 
@@ -61,6 +68,14 @@ export async function updateUser(id, newUser) {
  * Delete a user by id
  * @param {number} id 
  */
-export async function deleteUser(id) {
-    await updateUser(id, { isDeleted: true })
+export async function deleteUser(username) {
+    const oldUser = await getUserByUsername(username)
+    if (!oldUser) {
+        throw "User not found"
+    }
+    const [result] = await pool.query(`
+    UPDATE users 
+    SET isDeleted = true
+    WHERE username = ?`, [username])
+    return result.affectedRows > 0
 }

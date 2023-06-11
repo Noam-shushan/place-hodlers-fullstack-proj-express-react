@@ -1,13 +1,15 @@
 
 export type User = {
     id: number;
-    name: string;
+    firstName: string;
+    lastName: string;
     username: string;
     email: string;
     phone: string;
-    website: string;
+    password: string;
     isDeleted: boolean;
     createdAt: Date;
+    lastModified: Date;
     address: Address;
     company: Company;
 }
@@ -26,7 +28,54 @@ export type Address = {
 export type Company = {
     id: number;
     userId: number;
-    name: string;
+    companyName: string;
     catchPhrase: string;
     bs: string;
+    lastModified: Date;
+};
+
+export type Post = {
+    id: number;
+    userId: number;
+    title: string;
+    body: string;
+    createdAt: Date;
+    lastModified: Date;
+};
+
+export type Comment = {
+    id: number;
+    postId: number;
+    username: string;
+    email: string;
+    body: string;
+    createdAt: Date;
+    lastModified: Date;
+};
+
+export type Album = {
+    id: number;
+    userId: number;
+    title: string;
+    createdAt: Date;
+    lastModified: Date;
+};
+
+export type Photo = {
+    id: number;
+    albumId: number;
+    title: string;
+    uri: string;
+    thumbnailUrl: string;
+    createdAt: Date;
+    lastModified: Date;
+};
+
+export type Todo = {
+    id: number;
+    userId: number;
+    title: string;
+    completed: boolean;
+    createdAt: Date;
+    lastModified: Date;
 };
