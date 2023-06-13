@@ -1,12 +1,12 @@
 import pool from './dbPool.js'
-//import { User } from './types.js'
 
 /**
  * Get all users from the database
+ * @param {GetOptions} options
  * @returns {Promise<User[]>} all users
  */
-export async function getAllUsers() {
-    const [rows] = await pool.query('SELECT * FROM users WHERE isDeleted = false')
+export async function getAllUsers({ limit, offset }) {
+    const [rows] = await pool.query(`SELECT * FROM users WHERE isDeleted = false LIMIT ? OFFSET ?`, [limit, offset])
     return rows
 }
 
@@ -30,12 +30,17 @@ export async function createUser(user) {
  * @param {Object} options
  * @returns {Promise<User | undefined>} the user with the given id or undefined if not found
  */
-export async function getUser(id) {
+export async function getUserById(id) {
     const [rows] = await pool.query('SELECT * FROM users WHERE id = ? AND isDeleted = false', [id])
     return rows[0]
 }
 
-export async function getUserByUsername(username) {
+/**
+ * Get a user by username
+ * @param {string} username
+ * @returns {Promise<User | undefined>} the user with the given username or undefined if not found
+*/
+export async function getUser(username) {
     const [rows] = await pool.query(`SELECT * FROM users 
     WHERE username = ? AND isDeleted = false`,
         [username])
@@ -43,13 +48,13 @@ export async function getUserByUsername(username) {
 }
 
 /**
- * 
+ * Update a user by username and new user properties
  * @param {number} id 
  * @param {User} newUser 
  * @returns {Promise<boolean>} true if the user was updated, false if not found
  */
 export async function updateUser(username, newProps) {
-    const oldUser = await getUserByUsername(username)
+    const oldUser = await getUser(username)
     if (!oldUser) {
         throw "User not found"
     }
@@ -65,11 +70,11 @@ export async function updateUser(username, newProps) {
 }
 
 /**
- * Delete a user by id
+ * Delete a user by username
  * @param {number} id 
  */
 export async function deleteUser(username) {
-    const oldUser = await getUserByUsername(username)
+    const oldUser = await getUser(username)
     if (!oldUser) {
         throw "User not found"
     }
