@@ -1,5 +1,13 @@
 import Joi from 'joi'
 
+export function validateOnLogin(user) {
+    const schema = Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().required()
+    })
+    return schema.validate(user)
+}
+
 export function validateUserOnUpdate(user) {
     const schema = Joi.object({
         firstName: Joi.string().optional(),

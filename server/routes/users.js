@@ -1,8 +1,30 @@
 import express from 'express'
 import * as db from '../db/usersDB.js'
+import * as dbTodos from '../db/todosDB.js'
 import * as validation from './validation/usersVal.js'
 
 export const router = express.Router()
+
+router.get('/login', async (req, res) => {
+    console.log('GET /api/users/login', req.query)
+    const { error, value } = validation.validateOnLogin({ ...req.query, ...req.body })
+    if (error) {
+        res.status(400).send(error.details.map(detail => detail.message).join('\n'))
+        return
+    }
+    const { username, password } = value
+    const user = await db.getUser(username)
+    if (!user) {
+        res.status(404).send({ error: 'User not found' })
+        return
+    }
+    if (user.password !== password) {
+        res.status(401).send({ error: 'Wrong password' })
+        return
+    }
+    const todosCount = await dbTodos.count(user.id)
+    res.send({ ...user, todosCount })
+})
 
 router.get('/', async (req, res) => {
     console.log('GET /api/users', req.query)

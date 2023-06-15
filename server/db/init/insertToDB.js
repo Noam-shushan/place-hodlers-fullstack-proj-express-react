@@ -1,5 +1,5 @@
-import pool from './dbPool.js'
-import usersdata from './res/users-data.json' assert { type: "json" }
+import pool from '../dbPool.js'
+import usersdata from '../res/users-data.json' assert { type: "json" }
 
 //await insertUsers()
 //await insertTodos()

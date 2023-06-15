@@ -1,13 +1,13 @@
 
 import { createPool } from 'mysql2'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const pool = createPool({
-    host: 'localhost',
-    user: 'root',
-    database: 'proj6_FS',
-    password: 'n1o2a3m4',
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    database: process.env.MYSQL_DB,
+    password: process.env.MYSQL_PASSWORD,
 }).promise()
-
-console.log(`MYSQL_HOST sd: ${process.env.MYSQL_HOST}`)
 
 export default pool;
