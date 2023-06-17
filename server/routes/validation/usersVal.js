@@ -33,7 +33,7 @@ export function validateUserOnPost(user) {
 
 export function validateQueryOnGetUsers(query) {
     const schema = Joi.object({
-        limit: Joi.number().integer().min(1).max(100).default(10),
+        limit: Joi.number().integer().min(1).max(100).default(0),
         offset: Joi.number().integer().min(0).default(0)
     })
     return schema.validate(query)

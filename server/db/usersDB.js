@@ -6,8 +6,15 @@ import pool from './dbPool.js'
  * @returns {Promise<User[]>} all users
  */
 export async function getAllUsers({ limit, offset }) {
-    const [rows] = await pool.query(`SELECT * FROM users WHERE isDeleted = false LIMIT ? OFFSET ?`, [limit, offset])
-    return rows
+    let result = [];
+    if (limit === 0) {
+        result = await pool.query(`SELECT * FROM users WHERE isDeleted = false`)
+    }
+    else {
+        result = await pool.query(`SELECT * FROM users WHERE isDeleted = false LIMIT ? OFFSET ?`, [limit, offset])
+    }
+    const [rows] = result;
+    return rows;
 }
 
 /**
