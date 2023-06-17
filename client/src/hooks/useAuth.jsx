@@ -13,16 +13,16 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (token) {
-            fetch('/api/users/me', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    setUser(data)
-                    setLoading(false)
-                })
+            // fetch('/api/users/me', {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`
+            //     }
+            // })
+            //     .then(res => res.json())
+            //     .then(data => {
+            setUser(data)
+            setLoading(false)
+            // })
         } else {
             setLoading(false)
         }
