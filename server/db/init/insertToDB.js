@@ -1,14 +1,14 @@
 import pool from '../dbPool.js'
 import usersdata from '../res/users-data.json' assert { type: "json" }
 
-//await insertUsers()
-//await insertTodos()
-//await insertAlbums()
-//await insertPhotos()
-//await insertPosts()
-//await insertComments()
-//await insertCompany()
-//await insertAddress()
+// await insertUsers()
+await insertTodos()
+await insertAlbums()
+await insertPhotos()
+await insertPosts()
+await insertComments()
+await insertCompany()
+await insertAddress()
 
 async function insertUsers() {
     const createUser = async (user) => {
