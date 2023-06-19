@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, createContext } from 'react'
+import Signup from '../pages/login/Singup'
 
 const AuthContext = createContext()
+
 
 export function useAuth() {
     return useContext(AuthContext)
@@ -20,7 +22,7 @@ export function AuthProvider({ children }) {
             // })
             //     .then(res => res.json())
             //     .then(data => {
-            setUser(data)
+            setUser(JSON.parse(token))
             setLoading(false)
             // })
         } else {
@@ -29,7 +31,8 @@ export function AuthProvider({ children }) {
     }, [])
 
     const login = (username, password) => {
-        fetch(`http://localhost/api/users/login?username=${username}`, {
+        console.log(username, password, "in login")
+        fetch(`http://localhost:3000/api/users/login?username=${username}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -44,6 +47,23 @@ export function AuthProvider({ children }) {
             .catch(err => console.log(err))
     }
 
+    const signup = ({ info, address, company }) => {
+        fetch('http://localhost/api/users/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ info, address, company })
+        })
+            .then(res => res.json())
+            .then(user => {
+                localStorage.setItem('token', user)
+                setUser(user)
+            })
+            .catch(err => console.log(err))
+
+    }
+
     const logout = () => {
         localStorage.removeItem('token')
         setUser(null)
@@ -52,6 +72,7 @@ export function AuthProvider({ children }) {
     const value = {
         user,
         login,
+        signup,
         logout
     }
 
