@@ -7,13 +7,13 @@ export async function addPost(body) {
 }
 
 // Read
-export async function getAllPosts({ limit, offset }) {
+export async function getAllPosts(userId, params) {
     let result = [];
-    if (limit === 0) {
-        result = await pool.query(`SELECT * FROM posts WHERE isDeleted = false`)
+    if (parseInt(params.limit) === 0) {
+        result = await pool.query(`SELECT * FROM posts WHERE  isDeleted = false AND userId = ?`, [parseInt(userId)]);
     }
     else {
-        result = await pool.query(`SELECT * FROM posts WHERE isDeleted = false LIMIT ? OFFSET ?`, [limit, offset])
+        result = await pool.query(`SELECT * FROM posts WHERE userId = ? AND isDeleted = false LIMIT ? OFFSET ?`, [parseInt(userId), parseInt(params.limit), parseInt(params.offset)]);
     }
     const [rows] = result;
     return rows;
@@ -24,12 +24,11 @@ export async function getPostById(id) {
     return rows[0]
 }
 
-
-
 // Update
 export async function updatePost({ postId, title, body, userId }) {
+    
     if (!await getUserById(userId)) {
-        throw "User not found"
+        return "User not found"
     }
 
     let post = await getPostById(postId);
