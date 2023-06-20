@@ -91,3 +91,32 @@ export async function deleteUser(username) {
     WHERE username = ?`, [username])
     return result.affectedRows > 0
 }
+
+export async function count(userId, tableName) {
+    const result = await pool.query(`SELECT COUNT(*) FROM ${tableName} WHERE userId = ?`, [userId])
+    return result[0][0]['COUNT(*)']
+}
+
+export async function getFullUser(username) {
+    const user = await getUser(username)
+    if (!user) {
+        return null
+    }
+    const address = await getAddress(user.id)
+    const company = await getCompany(user.id)
+
+    return { ...user, address, company }
+}
+
+export async function getAddress(userId) {
+    const [rows] = await pool.query(`SELECT * FROM address WHERE userId = ?`, [userId])
+    return rows[0]
+}
+
+export async function getCompany(userId) {
+    const [rows] = await pool.query(`SELECT * FROM company WHERE userId = ?`, [userId])
+    return rows[0]
+}
+
+
+

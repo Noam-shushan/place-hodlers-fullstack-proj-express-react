@@ -30,5 +30,4 @@ function LoginSingupRouter() {
 export default function App() {
   const { user, login, logout } = useAuth()
   return user ? <Layout /> : <LoginSingupRouter />
-  // return <Layout />
 }

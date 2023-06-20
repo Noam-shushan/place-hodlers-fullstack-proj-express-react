@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext, createContext } from 'react'
-import Signup from '../pages/login/Singup'
 
 const AuthContext = createContext()
 
@@ -15,16 +14,8 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (token) {
-            // fetch('/api/users/me', {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`
-            //     }
-            // })
-            //     .then(res => res.json())
-            //     .then(data => {
             setUser(JSON.parse(token))
             setLoading(false)
-            // })
         } else {
             setLoading(false)
         }
@@ -32,7 +23,7 @@ export function AuthProvider({ children }) {
 
     const login = (username, password) => {
         console.log(username, password, "in login")
-        fetch(`http://localhost:3000/api/users/login?username=${username}`, {
+        fetch(`http://localhost:3000/api/users/login/${username}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -41,7 +32,8 @@ export function AuthProvider({ children }) {
         })
             .then(res => res.json())
             .then(user => {
-                localStorage.setItem('token', user)
+                console.log(user, "in login")
+                localStorage.setItem('token', JSON.stringify(user))
                 setUser(user)
             })
             .catch(err => console.log(err))

@@ -19,6 +19,7 @@ export default function LoginForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("loginState")
         login(loginState.username, loginState.password);
     }
 
